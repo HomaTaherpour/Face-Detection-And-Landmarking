@@ -1,1 +1,294 @@
+button_positions = [
+        (73, 132),#1
+        (72, 178),#2
+        (72, 215),#3
+        (74, 261),#4
+        (83, 298),#5
+        (92, 338),#6
+        (107, 380),#7
+        (123, 418),#8
+        (135, 455),#9
+        (153, 487),#10
+        (177, 522),#11
+        (200, 547),#12
+        (230, 579),#13
+        (260, 606),#14
+        (292, 631),#15
+        (330, 649),#16
+        (378, 658),#17
+        (429, 649),#18
+        (475, 634),#19
+        (472, 632),#19
+        (514, 606),#20
+        (544, 579),#21
+        (574, 555),#22
+        (600, 518),#23
+        (623, 487),#24
+        (641, 448),#25
+        (654, 407),#26
+        (667, 369),#27
+        (671, 329),#28
+        (680, 288),#29
+        (686, 251),#30
+        (691, 209),#31
+        (691, 167),#32
+        (689, 121),#33
+        (111, 96),#34
+        (154, 71),#35
+        (200, 69),#36
+        (251, 78),#37
+        (295, 97),#38
+        (290, 121),#39
+        (244, 107),#40
+        (195, 101),#41
+        (154, 97),#42
+        (422, 89),#43
+        (472, 70),#44
+        (528, 60),#45
+        (581, 57),#46
+        (632, 86),#47
+        (579, 88),#48
+        (530, 92),#49
+        (481, 102),#50
+        (430, 116),#51
+        (363, 169),#52
+        (360, 235),#53
+        (360, 297),#54
+        (361, 357),#55
+        (321, 190),#56
+        (306, 322),#57
+        (289, 374),#58
+        (312, 390),#59
+        (338, 396),#60
+        (366, 407),#61
+        (395, 394),#62
+        (421, 385),#63
+        (446, 366),#64
+        (428, 315),#65
+        (408, 187),#66
+        (167, 176),#67
+        (190, 157),#68
+        (223, 152),#69
+        (260, 162),#70
+        (286, 189),#71
+        (255, 195),#72
+        (223, 198),#73
+        (190, 190),#74
+        #75
+        (450, 189),#76
+        (478, 157),#77
+        (514, 143),#78
+        (549, 148),#79
+        (577, 170),#80
+        (552, 183),#81
+        (525, 188),#82
+        (486, 187),#83
+        #84
+        (274, 477),#85
+        (308, 467),#86
+        (349, 457),#87
+        (375, 464),#88
+        (402, 455),#89
+        (445, 464),#90
+        (493, 472),#91
+        (461, 504),#92
+        (425, 525),#93
+        (380, 535),#94
+        (335, 528),#95
+        (302, 507),#96
+        (298, 480),#97
+        (328, 484),#98
+        (378, 487),#99
+        (431, 482),#100
+        (470, 475),#101
+        (439, 494),#102
+        (382, 500),#103
+        (329, 493),#104
+        (230, 172),#105
+        (517, 164)#106
+    ]
 
+
+
+
+import tkinter as tk
+from PIL import Image, ImageTk
+import os
+import cv2
+import numpy as np
+import tensorflow as tf
+import testing
+from testing import openWebcam
+
+class RadioButtonApp:
+    def __init__(self, root, image_path, button_positions):
+        self.root = root
+        self.root.title("Radio Button on Image")
+
+        self.image = Image.open(image_path)
+        self.photo = ImageTk.PhotoImage(self.image)
+
+        self.canvas = tk.Canvas(root, width=self.image.width, height=self.image.height)
+        self.canvas.pack()
+
+        self.radio_buttons = []
+        for i, position in enumerate(button_positions, 1):
+            x, y = position
+            var = tk.IntVar()
+            radio_button = tk.Radiobutton(self.canvas, text=str(i), variable=var, value=i, command=lambda v=var, idx=i: self.on_button_click(v, idx))
+            self.radio_buttons.append((radio_button, x, y, var))
+            self.canvas.create_window(x, y, window=radio_button, anchor=tk.NW)
+
+        self.canvas.create_image(10, -70, anchor=tk.NW, image=self.photo)
+
+        self.chosen_points = []
+
+        # Add "Finish Choosing" button
+        self.finish_button = tk.Button(root, text="Finish Choosing", command=self.show_chosen_points)
+        self.finish_button.pack()
+
+        # Add "Submit" button inside the canvas
+        self.submit_button = tk.Button(self.canvas, text="Submit", command=self.submit_data)
+        self.submit_button_window = self.canvas.create_window(10, 10, window=self.submit_button, anchor=tk.NW)
+
+    def on_button_click(self, var, idx):
+        selected_value = var.get()
+        if selected_value not in self.chosen_points:
+            self.chosen_points.append(selected_value)
+            print(f"{self.chosen_points}")
+
+    def show_chosen_points(self):
+        print(f"Chosen points: {self.chosen_points}")
+
+    def submit_data(self):
+        # Write the chosen points as a Python list to a .txt file
+        with open("chosen_points.txt", "w") as file:
+            file.write(str(self.chosen_points))
+        print("Submit button clicked. Chosen points saved to chosen_points.txt.")
+
+        # Read the list from the .txt file
+        with open("chosen_points.txt", "r") as file:
+            selected_landmark_indices = eval(file.read())
+
+        # Run the second code with the selected landmark indices
+        openWebcam(selected_landmark_indices)
+
+if __name__ == "__main__":
+    # Specify the image path and button positions
+    image_path = "/Users/homa/Desktop/Face detection and landmarking Homa Taherpour/resized_image.jpg"
+    button_positions = [
+        (73, 132),#1
+        (72, 178),#2
+        (72, 215),#3
+        (74, 261),#4
+        (83, 298),#5
+        (92, 338),#6
+        (107, 380),#7
+        (123, 418),#8
+        (135, 455),#9
+        (153, 487),#10
+        (177, 522),#11
+        (200, 547),#12
+        (230, 579),#13
+        (260, 606),#14
+        (292, 631),#15
+        (330, 649),#16
+        (378, 658),#17
+        (429, 649),#18
+        (475, 634),#19
+        (472, 632),#19
+        (514, 606),#20
+        (544, 579),#21
+        (574, 555),#22
+        (600, 518),#23
+        (623, 487),#24
+        (641, 448),#25
+        (654, 407),#26
+        (667, 369),#27
+        (671, 329),#28
+        (680, 288),#29
+        (686, 251),#30
+        (691, 209),#31
+        (691, 167),#32
+        (689, 121),#33
+        (111, 96),#34
+        (154, 71),#35
+        (200, 69),#36
+        (251, 78),#37
+        (295, 97),#38
+        (290, 121),#39
+        (244, 107),#40
+        (195, 101),#41
+        (154, 97),#42
+        (422, 89),#43
+        (472, 70),#44
+        (528, 60),#45
+        (581, 57),#46
+        (632, 86),#47
+        (579, 88),#48
+        (530, 92),#49
+        (481, 102),#50
+        (430, 116),#51
+        (363, 169),#52
+        (360, 235),#53
+        (360, 297),#54
+        (361, 357),#55
+        (321, 190),#56
+        (306, 322),#57
+        (289, 374),#58
+        (312, 390),#59
+        (338, 396),#60
+        (366, 407),#61
+        (395, 394),#62
+        (421, 385),#63
+        (446, 366),#64
+        (428, 315),#65
+        (408, 187),#66
+        (167, 176),#67
+        (190, 157),#68
+        (223, 152),#69
+        (260, 162),#70
+        (286, 189),#71
+        (255, 195),#72
+        (223, 198),#73
+        (190, 190),#74
+        #75
+        (450, 189),#76
+        (478, 157),#77
+        (514, 143),#78
+        (549, 148),#79
+        (577, 170),#80
+        (552, 183),#81
+        (525, 188),#82
+        (486, 187),#83
+        #84
+        (274, 477),#85
+        (308, 467),#86
+        (349, 457),#87
+        (375, 464),#88
+        (402, 455),#89
+        (445, 464),#90
+        (493, 472),#91
+        (461, 504),#92
+        (425, 525),#93
+        (380, 535),#94
+        (335, 528),#95
+        (302, 507),#96
+        (298, 480),#97
+        (328, 484),#98
+        (378, 487),#99
+        (431, 482),#100
+        (470, 475),#101
+        (439, 494),#102
+        (382, 500),#103
+        (329, 493),#104
+        (230, 172),#105
+        (517, 164)#106
+    ]
+
+    # Create the Tkinter window
+    root = tk.Tk()
+
+    # Create and run the application
+    app = RadioButtonApp(root, image_path, button_positions)
+    root.mainloop()
