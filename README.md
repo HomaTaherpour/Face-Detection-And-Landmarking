@@ -1,9 +1,9 @@
 # Face Detection And Landmarking
 
+            ![Face-Detection-And-Landmarking](https://github.com/user-attachments/assets/18a27235-22f4-45f2-8bfe-e10175a84ddd)
+<img width="600" alt="Face-Detection-And-Landmarking" src="https://github.com/user-attachments/assets/ce9b4985-d876-498a-8f35-be574ca5cdad">
 
-<img width="866" alt="Face-Detection-And-Landmarking" src="https://github.com/user-attachments/assets/ce9b4985-d876-498a-8f35-be574ca5cdad">
 
-![Face-Detection-And-Landmarking](https://github.com/user-attachments/assets/18a27235-22f4-45f2-8bfe-e10175a84ddd)
 
 ## Introduction
 
