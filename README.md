@@ -1,5 +1,8 @@
 # Face Detection And Landmarking
 
+                              ![Uploading Screenshot 2024-10-28 at 01.26.36.png…]()
+
+
 ## Introduction
 
 This repository contains scripts tailored for facial landmark detection, offering features like real-time testing, a graphical user interface for landmark selection, image augmentation, and pixel coordinate extraction. The code efficiently employs MobileNetV2 for facial landmark detection, ensuring a balance between model size and accuracy. The model architecture includes a Global Average Pooling layer, dropout, and a Dense layer with sigmoid activation. Noteworthy scripts such as agumantation.py and dimentationtaker.py enable customization based on your images and dataset. Utilize dimentationtaker.py to overlay radio buttons on images and agumantation.py to augment pictures for dataset creation.
